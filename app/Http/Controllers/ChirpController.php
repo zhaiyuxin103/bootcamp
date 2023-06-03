@@ -4,11 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Chirp;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
 
 class ChirpController extends Controller
@@ -58,7 +55,7 @@ class ChirpController extends Controller
      *
      * @throws AuthorizationException
      */
-    public function edit(Chirp $chirp): View|Application|Factory
+    public function edit(Chirp $chirp): View
     {
         $this->authorize('update', $chirp);
 
@@ -72,7 +69,7 @@ class ChirpController extends Controller
      *
      * @throws AuthorizationException
      */
-    public function update(Request $request, Chirp $chirp): Application|Redirector|RedirectResponse
+    public function update(Request $request, Chirp $chirp): RedirectResponse
     {
         $this->authorize('update', $chirp);
 
@@ -87,9 +84,15 @@ class ChirpController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @throws AuthorizationException
      */
-    public function destroy(Chirp $chirp)
+    public function destroy(Chirp $chirp): RedirectResponse
     {
-        //
+        $this->authorize('delete', $chirp);
+
+        $chirp->delete();
+
+        return redirect(route('chirps.index'));
     }
 }

@@ -76,6 +76,7 @@ class ChirpController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
      * @throws AuthorizationException
      */
     public function destroy(Chirp $chirp): RedirectResponse

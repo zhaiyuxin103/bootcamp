@@ -12,7 +12,7 @@ class UpdateChirpRequest extends Request
     public function rules(): array
     {
         return [
-            //
+            'message' => ['required', 'string', 'max:255'],
         ];
     }
 }

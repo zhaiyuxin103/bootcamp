@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreChirpRequest;
 use App\Http\Requests\UpdateChirpRequest;
 use App\Models\Chirp;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class ChirpController extends Controller
 {
@@ -31,7 +33,7 @@ class ChirpController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreChirpRequest $request)
+    public function store(StoreChirpRequest $request): RedirectResponse
     {
         $request->user()->chirps()->create($request->validated());
 
@@ -48,18 +50,28 @@ class ChirpController extends Controller
 
     /**
      * Show the form for editing the specified resource.
+     *
+     * @throws AuthorizationException
      */
-    public function edit(Chirp $chirp)
+    public function edit(Chirp $chirp): Factory|View
     {
-        //
+        $this->authorize('update', $chirp);
+
+        return view('chirps.edit', compact('chirp'));
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * @throws AuthorizationException
      */
-    public function update(UpdateChirpRequest $request, Chirp $chirp)
+    public function update(UpdateChirpRequest $request, Chirp $chirp): RedirectResponse
     {
-        //
+        $this->authorize('update', $chirp);
+
+        $chirp->update($request->validated());
+
+        return redirect()->route('chirps.index')->banner('Chirp updated!');
     }
 
     /**
